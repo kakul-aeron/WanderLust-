@@ -1,0 +1,152 @@
+<% layout("/layouts/boilerplate") -%>
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Account Details</h2>
+            <p class="text-muted mb-0">Manage your profile and stay on top of your bookings.</p>
+        </div>
+        <a href="/listings" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to listings
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3"><i class="fas fa-user-circle me-2"></i>Your profile</h5>
+                    <p class="mb-2"><span class="text-muted">Username:</span> <strong><%= userProfile.username %></strong></p>
+                    <p class="mb-2"><span class="text-muted">Email:</span> <strong><%= userProfile.email %></strong></p>
+                    <p class="mb-0"><span class="text-muted">Mobile:</span> <strong><%= userProfile.phone || 'Not provided' %></strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title mb-3"><i class="fas fa-calendar-check me-2"></i>Booking summary</h5>
+                    <p class="mb-2 text-success"><strong><%= upcomingBookings.length %></strong> upcoming booking<%= upcomingBookings.length === 1 ? '' : 's' %></p>
+                    <p class="mb-0 text-muted"><strong><%= pastBookings.length %></strong> past booking<%= pastBookings.length === 1 ? '' : 's' %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% const formatDate = (value) => { if(!value) return 'N/A'; return new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }; %>
+    <% const formatCurrency = (value) => { const amount = Number(value || 0); return `₹ ${amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`; }; %>
+    <% const computeCost = (booking) => {
+        if (typeof booking.totalCost === 'number' && booking.totalCost > 0) {
+            return booking.totalCost;
+        }
+        if (!booking.listing || !booking.listing.price) {
+            return 0;
+        }
+        const nightlyRate = Number(booking.listing.price || 0) * 1.18;
+        const rooms = Number(booking.rooms || 1);
+        const msPerDay = 1000 * 60 * 60 * 24;
+        const start = new Date(booking.startDate);
+        const end = new Date(booking.endDate);
+        const rawNights = Math.ceil((end - start) / msPerDay);
+        const nights = Math.max(rawNights, 1);
+        const total = nights * nightlyRate * rooms;
+        return Number(total.toFixed(2));
+    }; %>
+    <% const statusBadgeClass = (status) => {
+        switch(status){
+            case 'confirmed': return 'bg-success';
+            case 'completed': return 'bg-secondary';
+            case 'cancelled': return 'bg-danger';
+            default: return 'bg-dark';
+        }
+    }; %>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0"><i class="fas fa-suitcase-rolling me-2 text-success"></i>Upcoming bookings</h5>
+        </div>
+        <div class="card-body">
+            <% if(upcomingBookings.length === 0) { %>
+                <p class="text-muted mb-0">You have no upcoming stays. Book your next getaway from the listings page.</p>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Listing</th>
+                                <th scope="col">Check-in</th>
+                                <th scope="col">Check-out</th>
+                                <th scope="col">Rooms</th>
+                                <th scope="col">Price (incl. 18% tax)</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% upcomingBookings.forEach((booking)=>{ %>
+                                <tr>
+                                    <td>
+                                        <strong><%= booking.listing ? booking.listing.title : 'Listing removed' %></strong><br>
+                                        <small class="text-muted"><%= booking.listing ? `${booking.listing.location}, ${booking.listing.country}` : '' %></small>
+                                    </td>
+                                    <td><%= formatDate(booking.startDate) %></td>
+                                    <td><%= formatDate(booking.endDate) %></td>
+                                    <td><%= booking.rooms %></td>
+                                    <td><strong><%= formatCurrency(computeCost(booking)) %></strong></td>
+                                    <td>
+                                        <span class="badge <%= statusBadgeClass(booking.status) %> text-uppercase">
+                                            <%= booking.status %>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-transparent">
+            <h5 class="mb-0"><i class="fas fa-history me-2 text-primary"></i>Previous bookings</h5>
+        </div>
+        <div class="card-body">
+            <% if(pastBookings.length === 0) { %>
+                <p class="text-muted mb-0">You have not completed any stays yet.</p>
+            <% } else { %>
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col">Listing</th>
+                                <th scope="col">Check-in</th>
+                                <th scope="col">Check-out</th>
+                                <th scope="col">Rooms</th>
+                                <th scope="col">Price (incl. 18% tax)</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% pastBookings.forEach((booking)=>{ %>
+                                <tr>
+                                    <td>
+                                        <strong><%= booking.listing ? booking.listing.title : 'Listing removed' %></strong><br>
+                                        <small class="text-muted"><%= booking.listing ? `${booking.listing.location}, ${booking.listing.country}` : '' %></small>
+                                    </td>
+                                    <td><%= formatDate(booking.startDate) %></td>
+                                    <td><%= formatDate(booking.endDate) %></td>
+                                    <td><%= booking.rooms %></td>
+                                    <td><strong><%= formatCurrency(computeCost(booking)) %></strong></td>
+                                    <td>
+                                        <span class="badge <%= statusBadgeClass(booking.status) %> text-uppercase">
+                                            <%= booking.status %>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

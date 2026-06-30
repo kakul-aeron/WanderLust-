@@ -1,0 +1,50 @@
+<footer>
+    <div class="f-info">
+    
+        <div class="f-info-brand"><strong>Wanderlust</strong></div>
+        <div class="f-info-links">
+            <a href="#" onclick="showPrivacyPolicy()">Privacy</a>
+            <a href="#" onclick="showTermsOfService()">Terms</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+function showPrivacyPolicy() {
+    try {
+        alert('Privacy Policy\n\nThis Privacy Policy explains how Wanderlust collects, uses, and protects your personal information when you use our travel and accommodation platform.\n\nWe may collect basic details such as your name, email, and booking preferences to provide a better travel experience.\n\nYour data is used only for legitimate purposes like account management, booking confirmation, and personalized recommendations.\nWe do not sell or share your personal information with third parties without your consent.\n\nAll sensitive information is encrypted and securely stored.\n\nBy using our services, you agree to the terms outlined in this Privacy Policy.\n\nWe may update this policy periodically to comply with new regulations or improve our transparency.\n\nIf you have any questions or concerns, please contact us at wanderers_support@gmail.com.\n\nThank you for trusting Wanderlust.');    } catch (error) {
+        console.error('Error showing privacy policy:', error);
+        alert('Privacy policy information is currently unavailable. Please contact us at top4rules@gmail.com for more information.');
+    }
+}
+
+function showTermsOfService() {
+    try {
+        alert('Terms of Service\n\nBy using Wanderlust, you agree to abide by these terms and conditions governing the use of our travel and accommodation platform.\n\nYou are responsible for providing accurate information while creating an account or making bookings.\n\nWanderlust reserves the right to modify, suspend, or terminate services at any time for maintenance or policy compliance.\n\nAll prices, availability, and offers displayed are subject to change without prior notice.\n\nWe are not liable for delays, cancellations, or inaccuracies caused by third-party service providers.\n\nUsers must use the platform lawfully and avoid fraudulent, abusive, or harmful activities.\n\nBy continuing to use our services, you acknowledge that you have read and agreed to these terms.\n\nFor detailed terms or concerns, please contact us at wanderers_support@gmail.com.\n\nThank you for choosing Wanderlust.');    } catch (error) {
+        console.error('Error showing terms of service:', error);
+        alert('Terms of service information is currently unavailable. Please contact us at top4rules@gmail.com for more information.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const socialLinks = document.querySelectorAll('.f-socials a');
+    
+    socialLinks.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.2)';
+            this.style.transition = 'transform 0.3s ease';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+        
+        link.addEventListener('click', function(e) {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+});
+</script>

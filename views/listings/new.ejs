@@ -1,0 +1,106 @@
+<% layout("/layouts/boilerplate")-%>
+<body>
+    <div class="row">
+    <div class="col-8 offset-2"> 
+    <h3><b>Create a new list</b></h3>
+    <br>
+    <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
+        <div class="mb-3">
+            <lable for="title" class="form-label">Title</lable>
+            <input name="listing[title]" placeholder="enter title" type="text" class="form-control" required/>
+            <div class="invalid-feedback">Please enter a valid title</div> 
+        </div>
+        
+        <div class="mb-3">
+            <lable for="description" class="form-label">Description</lable>
+            <textarea name="listing[description]" type="text" class="form-control" required></textarea>
+            <div class="invalid-feedback">Description can not be empty</div> 
+        </div>
+
+        <div class="mb-3">
+            <lable for="image" class="form-label">Image</lable>
+            <input name="listing[image]" placeholder="Upload listing image" type="file" class="form-control" required/>
+        </div>
+
+        <div class="row"> 
+            <div class="mb-3 col-md-4">
+                <lable for="price" class="form-label">Price</lable>
+                <input name="listing[price]" placeholder="enter price"  class="form-control" required>
+                <div class="invalid-feedback">Please enter a valid price</div> 
+            </div>
+            <div class="mb-3 col-md-4">
+                <label for="totalRooms" class="form-label">Total Rooms</label>
+                <input name="listing[totalRooms]" placeholder="5" type="number" min="1" max="50" class="form-control" value="5" required>
+                <div class="invalid-feedback">Rooms must be between 1 and 50</div>
+            </div>
+    
+            <div class="mb-3 col-md-4">
+                <lable for="country" class="form-label">Country</lable>
+                <select name="listing[country]" class="form-control" required>
+                    <option value="">Select a country</option>
+                    <option value="India">🇮🇳 India</option>
+                    <option value="United States">🇺🇸 United States</option>
+                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                    <option value="France">🇫🇷 France</option>
+                    <option value="Germany">🇩🇪 Germany</option>
+                    <option value="Italy">🇮🇹 Italy</option>
+                    <option value="Spain">🇪🇸 Spain</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="China">🇨🇳 China</option>
+                    <option value="South Korea">🇰🇷 South Korea</option>
+                    <option value="Thailand">🇹🇭 Thailand</option>
+                    <option value="Singapore">🇸🇬 Singapore</option>
+                    <option value="Malaysia">🇲🇾 Malaysia</option>
+                    <option value="Indonesia">🇮🇩 Indonesia</option>
+                    <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
+                    <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+                    <option value="Turkey">🇹🇷 Turkey</option>
+                    <option value="Greece">🇬🇷 Greece</option>
+                    <option value="Switzerland">🇨🇭 Switzerland</option>
+                    <option value="Netherlands">🇳🇱 Netherlands</option>
+                    <option value="Belgium">🇧🇪 Belgium</option>
+                    <option value="Austria">🇦🇹 Austria</option>
+                    <option value="Brazil">🇧🇷 Brazil</option>
+                    <option value="Mexico">🇲🇽 Mexico</option>
+                    <option value="Argentina">🇦🇷 Argentina</option>
+                    <option value="South Africa">🇿🇦 South Africa</option>
+                    <option value="Egypt">🇪🇬 Egypt</option>
+                    <option value="Russia">🇷🇺 Russia</option>
+                </select>
+                <div class="invalid-feedback">Please select a country</div> 
+            </div>
+        </div>
+        
+
+        <div class="mb-3">
+            <lable for="location" class="form-label">Location</lable>
+            <textarea name="listing[location]" placeholder="enter location" type="text" class="form-control" required></textarea>
+            <div class="invalid-feedback">Location feild should be valid</div> 
+        </div>
+
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select name="listing[category]" class="form-control" required>
+                <option value="">Select a category</option>
+                <option value="trending">🔥 Trending</option>
+                <option value="rooms">🛏️ Rooms</option>
+                <option value="iconic-cities">🏙️ Iconic Cities</option>
+                <option value="farms">🐄 Farms</option>
+                <option value="arctic">❄️ Arctic</option>
+                <option value="mountains">⛰️ Mountains</option>
+                <option value="castles">🏰 Castles</option>
+                <option value="amazing-pools">🏊‍♂️ Amazing Pools</option>
+                <option value="camping">⛺ Camping</option>
+            </select>
+            <div class="invalid-feedback">Please select a category</div>
+        </div>
+
+        <button class="btn btn-dark add-btn">Add</button>
+        </form>
+        </div>
+        </div>
+        <br>
+        <br>
+</body>

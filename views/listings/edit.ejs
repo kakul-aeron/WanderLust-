@@ -1,0 +1,113 @@
+<% layout("/layouts/boilerplate")-%>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h3 class="mb-4"><b>Edit the listing</b></h3>
+                <form method="POST" action="/listings/<%=listing._id%>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input name="listing[title]" value="<%=listing.title%>" class="form-control" required/>
+                        <div class="invalid-feedback">Please enter a valid title</div> 
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="listing[description]" type="text" class="form-control" required><%=listing.description%></textarea>
+                        <div class="invalid-feedback">Description can not be empty</div> 
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Original Listing Image</label>
+                        <img src="<%= listing.image.url %>" alt="Listing Image" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;" />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="image" class="form-label">New Image (optional)</label>
+                        <input name="listing[image]" type="file" class="form-control" />
+                        <div class="form-text">Leave empty to keep the current image</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="mb-3 col-md-4">
+                            <label for="price" class="form-label">Price</label>
+                            <input name="listing[price]" value="<%=listing.price%>" type="number" class="form-control" required>
+                            <div class="invalid-feedback">Please enter a valid price</div> 
+                        </div>
+                        <div class="mb-3 col-md-4">
+                            <label for="totalRooms" class="form-label">Total Rooms</label>
+                            <input name="listing[totalRooms]" value="<%=listing.totalRooms || 5%>" type="number" min="1" max="50" class="form-control" required>
+                            <div class="invalid-feedback">Rooms must be between 1 and 50</div>
+                        </div>
+                
+                        <div class="mb-3 col-md-4">
+                            <label for="country" class="form-label">Country</label>
+                            <select name="listing[country]" class="form-control" required>
+                                <option value="">Select a country</option>
+                                <option value="India" <%= listing.country === 'India' ? 'selected' : '' %>>🇮🇳 India</option>
+                                <option value="United States" <%= listing.country === 'United States' ? 'selected' : '' %>>🇺🇸 United States</option>
+                                <option value="United Kingdom" <%= listing.country === 'United Kingdom' ? 'selected' : '' %>>🇬🇧 United Kingdom</option>
+                                <option value="Canada" <%= listing.country === 'Canada' ? 'selected' : '' %>>🇨🇦 Canada</option>
+                                <option value="Australia" <%= listing.country === 'Australia' ? 'selected' : '' %>>🇦🇺 Australia</option>
+                                <option value="France" <%= listing.country === 'France' ? 'selected' : '' %>>🇫🇷 France</option>
+                                <option value="Germany" <%= listing.country === 'Germany' ? 'selected' : '' %>>🇩🇪 Germany</option>
+                                <option value="Italy" <%= listing.country === 'Italy' ? 'selected' : '' %>>🇮🇹 Italy</option>
+                                <option value="Spain" <%= listing.country === 'Spain' ? 'selected' : '' %>>🇪🇸 Spain</option>
+                                <option value="Japan" <%= listing.country === 'Japan' ? 'selected' : '' %>>🇯🇵 Japan</option>
+                                <option value="China" <%= listing.country === 'China' ? 'selected' : '' %>>🇨🇳 China</option>
+                                <option value="South Korea" <%= listing.country === 'South Korea' ? 'selected' : '' %>>🇰🇷 South Korea</option>
+                                <option value="Thailand" <%= listing.country === 'Thailand' ? 'selected' : '' %>>🇹🇭 Thailand</option>
+                                <option value="Singapore" <%= listing.country === 'Singapore' ? 'selected' : '' %>>🇸🇬 Singapore</option>
+                                <option value="Malaysia" <%= listing.country === 'Malaysia' ? 'selected' : '' %>>🇲🇾 Malaysia</option>
+                                <option value="Indonesia" <%= listing.country === 'Indonesia' ? 'selected' : '' %>>🇮🇩 Indonesia</option>
+                                <option value="United Arab Emirates" <%= listing.country === 'United Arab Emirates' ? 'selected' : '' %>>🇦🇪 United Arab Emirates</option>
+                                <option value="Saudi Arabia" <%= listing.country === 'Saudi Arabia' ? 'selected' : '' %>>🇸🇦 Saudi Arabia</option>
+                                <option value="Turkey" <%= listing.country === 'Turkey' ? 'selected' : '' %>>🇹🇷 Turkey</option>
+                                <option value="Belgium" <%= listing.country === 'Belgium' ? 'selected' : '' %>>🇧🇪 Belgium</option>
+                                <option value="Austria" <%= listing.country === 'Austria' ? 'selected' : '' %>>🇦🇹 Austria</option>
+                                <option value="Sweden" <%= listing.country === 'Sweden' ? 'selected' : '' %>>🇸🇪 Sweden</option>
+                                <option value="Norway" <%= listing.country === 'Norway' ? 'selected' : '' %>>🇳🇴 Norway</option>
+                                <option value="Denmark" <%= listing.country === 'Denmark' ? 'selected' : '' %>>🇩🇰 Denmark</option>
+                                <option value="Brazil" <%= listing.country === 'Brazil' ? 'selected' : '' %>>🇧🇷 Brazil</option>
+                                <option value="Mexico" <%= listing.country === 'Mexico' ? 'selected' : '' %>>🇲🇽 Mexico</option>
+                                <option value="Argentina" <%= listing.country === 'Argentina' ? 'selected' : '' %>>🇦🇷 Argentina</option>
+                                <option value="South Africa" <%= listing.country === 'South Africa' ? 'selected' : '' %>>🇿🇦 South Africa</option>
+                                <option value="Egypt" <%= listing.country === 'Egypt' ? 'selected' : '' %>>🇪🇬 Egypt</option>
+                                <option value="Russia" <%= listing.country === 'Russia' ? 'selected' : '' %>>🇷🇺 Russia</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a country</div> 
+                        </div>
+                    </div>
+                    
+                                                    <div class="mb-3">
+                                    <label for="location" class="form-label">Location</label>
+                                    <textarea name="listing[location]" type="text" class="form-control" required><%=listing.location%></textarea>
+                                    <div class="invalid-feedback">Location field should be valid</div> 
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select name="listing[category]" class="form-control" required>
+                                        <option value="">Select a category</option>
+                                        <option value="trending" <%= listing.category === 'trending' ? 'selected' : '' %>>🔥 Trending</option>
+                                        <option value="rooms" <%= listing.category === 'rooms' ? 'selected' : '' %>>🛏️ Rooms</option>
+                                        <option value="iconic-cities" <%= listing.category === 'iconic-cities' ? 'selected' : '' %>>🏙️ Iconic Cities</option>
+                                        <option value="farms" <%= listing.category === 'farms' ? 'selected' : '' %>>🐄 Farms</option>
+                                        <option value="arctic" <%= listing.category === 'arctic' ? 'selected' : '' %>>❄️ Arctic</option>
+                                        <option value="mountains" <%= listing.category === 'mountains' ? 'selected' : '' %>>⛰️ Mountains</option>
+                                        <option value="castles" <%= listing.category === 'castles' ? 'selected' : '' %>>🏰 Castles</option>
+                                        <option value="amazing-pools" <%= listing.category === 'amazing-pools' ? 'selected' : '' %>>🏊‍♂️ Amazing Pools</option>
+                                        <option value="camping" <%= listing.category === 'camping' ? 'selected' : '' %>>⛺ Camping</option>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a category</div>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-dark add-btn">Update Listing</button>
+                        <a href="/listings/<%=listing._id%>" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>

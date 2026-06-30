@@ -1,0 +1,427 @@
+<style>
+  
+  .btn-search {
+  background-color: #e63946;
+  color: #ffffff;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; 
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-search:hover {
+  background-color: #d62828;
+  transform: scale(1.03);
+}
+
+.btn-search:active {
+  transform: scale(0.97);
+}
+
+.btn-search:focus {
+  outline: 2px solid #f1faee;
+  outline-offset: 3px;
+}
+
+
+.search-input {
+  padding: 10px 16px;
+  border: 2px solid #ccc;
+  border-radius: 999px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+}
+
+.search-input:focus {
+  border-color: #e63946;
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+}
+
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 200px;
+  z-index: 1000;
+  padding: 10px 0;
+}
+
+.hamburger-menu.show {
+  display: flex;
+}
+
+.hamburger-menu a {
+  color: #333;
+  text-decoration: none;
+  padding: 12px 20px;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.hamburger-menu a:last-child {
+  border-bottom: none;
+}
+
+.hamburger-menu a:hover {
+  background-color: #f8f9fa;
+  color: #dc3545;
+}
+
+.hamburger-menu a.logout {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.hamburger-menu a.account-link {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+.hamburger-menu a.add-listing {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.hamburger-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.hamburger-btn:hover {
+  background-color: #f8f9fa;
+  color: #dc3545;
+}
+
+.hamburger-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05);
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover .brand-text {
+  transform: scale(1.05);
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.compass-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.compass-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.compass-icon:hover::before {
+  transform: translateX(100%);
+}
+
+.compass-icon:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.compass-icon:active {
+  transform: scale(0.95);
+}
+
+.explore-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+  margin-left: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(214, 40, 40, 0.1) 100%);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.explore-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(230, 57, 70, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.explore-link:hover::before {
+  left: 100%;
+}
+
+.explore-link:hover {
+  color: #e63946;
+  background: linear-gradient(135deg, rgba(230, 57, 70, 0.15) 0%, rgba(214, 40, 40, 0.15) 100%);
+  border-color: rgba(230, 57, 70, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(230, 57, 70, 0.2);
+}
+
+.explore-link:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(230, 57, 70, 0.15);
+}
+
+.dark-mode .explore-link {
+  color: var(--text-primary);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 82, 82, 0.1) 100%);
+}
+
+.dark-mode .explore-link:hover {
+  color: #ff6b6b;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.15) 0%, rgba(255, 82, 82, 0.15) 100%);
+  border-color: rgba(255, 107, 107, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+}
+
+.theme-toggle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  margin-right: 10px;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.chatbot-btn {
+  background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+  margin-right: 10px;
+}
+
+.chatbot-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+}
+
+.chatbot-btn:active {
+  transform: scale(0.95);
+}
+
+</style>
+
+<nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/listings">
+        <div class="compass-icon">
+          <i class="fa-solid fa-compass"></i>
+        </div>
+      </a>
+      
+      <div class="navbar-nav">
+        <a class="nav-link explore-link" href="/listings">Explore</a>
+      </div>
+      
+      <div class="navbar-nav mx-auto">
+        <form class="d-flex" role="search" method="GET" action="/listings">
+          <input class="form-control me-2 search-input" type="search" name="search" placeholder="Search destinations, categories..." aria-label="Search" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"/>
+          <button class="btn-search" type="submit"> <i class="fa-solid fa-magnifying-glass"></i> Search</button>
+        </form>
+      </div>
+
+      <div class="navbar-nav d-flex align-items-center">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+        
+        <button class="chatbot-btn" onclick="toggleChatbot()" title="Chat with us">
+          <i class="fas fa-comments"></i>
+        </button>
+      </div>
+
+      <div class="navbar-nav position-relative">
+        <button class="hamburger-btn" onclick="toggleHamburgerMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="hamburger-menu" id="hamburgerMenu">
+          <% if (!currUser) { %>
+            <a href="/signup">
+              <i class="fas fa-user-plus"></i> Sign Up
+            </a>
+            <a href="/login">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+          <% } else { %>
+            <% if (currUser.username === 'author') { %>
+              <a href="/listings/new" class="add-listing">
+                <i class="fas fa-plus"></i> Add New Listing
+              </a>
+            <% } %>
+            <a href="/account" class="account-link">
+              <i class="fas fa-id-card"></i> Account Details
+            </a>
+            <a href="/logout" class="logout">
+              <i class="fas fa-sign-out-alt"></i> Log Out
+            </a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<script>
+function toggleHamburgerMenu() {
+  const menu = document.getElementById('hamburgerMenu');
+  menu.classList.toggle('show');
+}
+
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById('hamburgerMenu');
+  const hamburgerBtn = event.target.closest('.hamburger-btn');
+  
+  if (!hamburgerBtn && !menu.contains(event.target)) {
+    menu.classList.remove('show');
+  }
+});
+
+function toggleTheme() {
+  const body = document.body;
+  const themeIcon = document.getElementById('theme-icon');
+  
+  console.log('Theme toggle clicked!');
+  console.log('Current body classes:', body.className);
+  
+  if (body.classList.contains('dark-mode')) {
+    body.classList.remove('dark-mode');
+    themeIcon.className = 'fas fa-moon';
+    localStorage.setItem('theme', 'light');
+    console.log('Switched to light mode');
+  } else {
+    body.classList.add('dark-mode');
+    themeIcon.className = 'fas fa-sun';
+    localStorage.setItem('theme', 'dark');
+    console.log('Switched to dark mode');
+  }
+  
+  console.log('New body classes:', body.className);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const savedTheme = localStorage.getItem('theme');
+  const themeIcon = document.getElementById('theme-icon');
+  
+  console.log('Loading saved theme:', savedTheme);
+  
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeIcon.className = 'fas fa-sun';
+    console.log('Applied dark mode on load');
+  } else {
+    console.log('Applied light mode on load');
+  }
+});
+
+function toggleChatbot() {
+  const chatbot = document.getElementById('chatbot-widget');
+  if (chatbot) {
+    chatbot.classList.toggle('show');
+  }
+}
+</script>

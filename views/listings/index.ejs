@@ -1,0 +1,312 @@
+<% layout("/layouts/boilerplate")-%>
+<body>
+
+    <style>
+      #filters{
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .filter{
+        text-align: center;
+        margin-right: 1rem;
+        margin-top: 0.5rem;
+        opacity: 0.8;
+        padding: 8px 12px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid transparent;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+      }
+
+      .filter:hover {
+        opacity: 1;
+        cursor: pointer;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-color: #dc3545;
+      }
+
+      .filter.active {
+        opacity: 1;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 8px 12px;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        border-color: #dc3545;
+      }
+
+      .filter i {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+        display: block;
+      }
+
+      .filter p {
+        margin: 0;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .category-badge {
+        margin-top: 10px;
+      }
+
+      .category-badge .badge {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border-radius: 15px;
+      }
+
+      .no-results {
+        padding: 3rem 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        margin: 2rem 0;
+      }
+
+      .no-results h3 {
+        color: #6c757d;
+        margin-bottom: 1rem;
+      }
+
+      .no-results p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .tax-info {
+        display: none;
+      }
+
+      .tax-toggle{
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        height: 2.8rem;
+        padding: 0.6rem 1.2rem;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+        margin-right: 2rem;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: white;
+        font-weight: 500;
+      }
+
+      .tax-toggle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .tax-toggle:active {
+        transform: translateY(0);
+      }
+
+      .tax-toggle .form-check-input {
+        margin-right: 8px;
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        background-color: transparent;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .tax-toggle .form-check-input:checked {
+        background-color: #fff;
+        border-color: #fff;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+      }
+
+      .tax-toggle .form-check-label {
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        margin: 0;
+      }
+
+    </style>
+    
+    <div id="filters">
+        <div class="filter" data-category="rooms" onclick="filterByCategory('rooms')">
+          <div><i class="fa-solid fa-bed"></i></div>
+          <p>Rooms</p>
+        </div>
+        <div class="filter" data-category="iconic-cities" onclick="filterByCategory('iconic-cities')">
+          <div><i class="fa-solid fa-city"></i></div>
+          <p>Iconic Cities</p>
+        </div>
+        <div class="filter" data-category="farms" onclick="filterByCategory('farms')">
+          <div><i class="fa-solid fa-cow"></i></div>
+          <p>Farms</p>
+        </div>
+        <div class="filter" data-category="arctic" onclick="filterByCategory('arctic')">
+          <div><i class="fa-solid fa-snowflake"></i></div>
+          <p>Arctic</p>
+        </div>
+        <div class="filter" data-category="mountains" onclick="filterByCategory('mountains')">
+          <div><i class="fa-solid fa-mountain-sun"></i></div>
+          <p>Mountains</p>
+        </div>
+        <div class="filter" data-category="castles" onclick="filterByCategory('castles')">
+          <div><i class="fa-solid fa-chess-rook"></i></div>
+          <p>Castles</p>
+        </div>
+        <div class="filter" data-category="amazing-pools" onclick="filterByCategory('amazing-pools')">
+          <div><i class="fa-solid fa-person-swimming"></i></div>
+          <p>Amazing Pools</p>
+        </div>
+        <div class="filter" data-category="camping" onclick="filterByCategory('camping')">
+          <div><i class="fa-solid fa-campground"></i></div>
+          <p>Camping</p>
+        </div>
+
+      <div class="tax-toggle">
+        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+        <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
+      </div>
+
+    </div>
+
+    <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1 mt-3">
+    <% if(allListings.length === 0) { %>
+      <div class="col-12 text-center">
+        <div class="no-results">
+          <i class="fas fa-search" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+          <h3>No listings found</h3>
+          <p class="text-muted">
+            <% if(typeof searchQuery !== 'undefined' && searchQuery) { %>
+              No results found for "<strong><%= searchQuery %></strong>"
+            <% } else if(typeof selectedCategory !== 'undefined' && selectedCategory) { %>
+              No listings in the "<strong><%= selectedCategory %></strong>" category
+            <% } else { %>
+              No listings available
+            <% } %>
+          </p>
+          <a href="/listings" class="btn btn-outline-primary">View All Listings</a>
+        </div>
+      </div>
+    <% } else { %>
+      <% for(let listing of allListings){ %>
+        <a href="/listings/<%= listing._id%>" class="listing_link"> 
+      <div class="card col listing-card">
+          <img src="<%= listing.image.url%>" class="card-img-top" alt="listing_image" style="height: 20rem;"/>
+          <div class="card-img-overlay"></div>
+          <div class="card-body">
+            <p class="card-text">
+              <b><%= listing.title %></b><br>
+              <span class="price-display">
+                &#8377; <span class="base-price" data-price="<%= listing.price %>"><%= listing.price.toLocaleString("en-IN") %></span> / night
+              </span>
+              <i class="tax-info"> &nbsp; &nbsp;(+18% GST)</i>
+            </p>
+            <div class="category-badge">
+              <% 
+                const categoryIcons = {
+                  'trending': '🔥',
+                  'rooms': '🛏️',
+                  'iconic-cities': '🏙️',
+                  'farms': '🐄',
+                  'arctic': '❄️',
+                  'mountains': '⛰️',
+                  'castles': '🏰',
+                  'amazing-pools': '🏊‍♂️',
+                  'camping': '⛺'
+                };
+                const categoryNames = {
+                  'trending': 'Trending',
+                  'rooms': 'Rooms',
+                  'iconic-cities': 'Iconic Cities',
+                  'farms': 'Farms',
+                  'arctic': 'Arctic',
+                  'mountains': 'Mountains',
+                  'castles': 'Castles',
+                  'amazing-pools': 'Amazing Pools',
+                  'camping': 'Camping'
+                };
+              %>
+              <span class="badge bg-secondary">
+                <%= categoryIcons[listing.category] %> <%= categoryNames[listing.category] %>
+              </span>
+            </div>
+          </div>
+        </div>     
+        <% } %>
+      </a>
+    <% } %>
+    </div>
+    
+    <script>
+      let taxSwitch = document.getElementById("switchCheckDefault");
+      taxSwitch.addEventListener("click", ()=>{
+        let taxInfo = document.getElementsByClassName("tax-info");
+        let basePrices = document.getElementsByClassName("base-price");
+        
+        for(let i = 0; i < basePrices.length; i++){
+          let priceElement = basePrices[i];
+          let originalPrice = parseFloat(priceElement.getAttribute('data-price'));
+          
+          if(taxSwitch.checked){
+            let priceWithTax = originalPrice * 1.18;
+            priceElement.textContent = priceWithTax.toLocaleString("en-IN");
+            taxInfo[i].style.display = "inline";
+          } else {
+            priceElement.textContent = originalPrice.toLocaleString("en-IN");
+            taxInfo[i].style.display = "none";
+          }
+        }
+      })
+
+      function filterByCategory(category) {
+        document.querySelectorAll('.filter').forEach(filter => {
+          filter.classList.remove('active');
+        });
+        
+        event.target.closest('.filter').classList.add('active');
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSearch = urlParams.get('search');
+        
+        let url = '/listings?';
+        const params = new URLSearchParams();
+        
+        if (category) {
+          params.append('category', category);
+        }
+        
+        if (currentSearch) {
+          params.append('search', currentSearch);
+        }
+        
+        window.location.href = `/listings?${params.toString()}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentCategory = urlParams.get('category');
+        
+        if (currentCategory) {
+          const activeFilter = document.querySelector(`[data-category="${currentCategory}"]`);
+          if (activeFilter) {
+            activeFilter.classList.add('active');
+          }
+        }
+      });
+    </script>
+      
+    
+</body>
+
+
+ 

@@ -1,0 +1,288 @@
+<% layout("/layouts/boilerplate")-%>
+<body>
+    <% const today = new Date().toISOString().split('T')[0]; %>
+    <% const soldOut = listing.availableRooms === 0; %>
+    <% const safeUserBookings = (typeof userBookings !== "undefined" && Array.isArray(userBookings)) ? userBookings : []; %>
+    <% const allowReview = (typeof canReview === "boolean") ? canReview : false; %>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h3><%= listing.title%></h3>
+                <div class="card listing-card mb-4">
+                    <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image">
+                    <div class="card-body">
+                        <p class="card-text"></p>
+                        <p><strong>Owned by:</strong> <i><%=listing.owner.username%></i></p>
+                        <p><%= listing.description %></p>
+                        <p><strong>Price:</strong> &#8377; <%= listing.price.toLocaleString("en-IN") %></p>
+                        <p><strong>Availability:</strong> <%= listing.availableRooms %> of <%= listing.totalRooms %> rooms currently open</p>
+                        <p><strong>Location:</strong> <%= listing.location %>, <%= listing.country %></p>
+                        <div class="direction-buttons">
+                            <button onclick="scrollToMap(event)" class="btn-directions btn-view-map">
+                                <i class="fas fa-map-marked-alt"></i>
+                                View on Map
+                            </button>
+                            <button onclick="openDirections()" class="btn-directions btn-get-directions">
+                                <i class="fas fa-directions"></i>
+                                Get Directions
+                            </button>
+                            <button onclick="scrollToBooking(event)" class="btn-directions btn-book-room">
+                                <i class="fas fa-bed"></i>
+                                Book a Room
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-4 map-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Location Map</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="map" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+                    </div>
+                </div>
+
+                <div class="card mb-4" id="booking-section">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Book a Room</h5>
+                        <span class="badge <%= soldOut ? 'bg-danger' : 'bg-success' %>">
+                            <%= soldOut ? 'Sold Out' : `${listing.availableRooms} rooms available` %>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <% if(!currUser){ %>
+                            <p class="text-muted">Please <a href="/login">login</a> to book this stay.</p>
+                        <% } else if(currUser && currUser._id.equals(listing.owner._id)) { %>
+                            <p class="text-muted">You are the owner of this listing. Guests can book once rooms are available.</p>
+                        <% } else if(soldOut) { %>
+                            <p class="text-danger">All rooms are currently booked. Check back later for availability.</p>
+                        <% } else { %>
+                        <form method="POST" action="/listings/<%=listing._id%>/bookings" novalidate class="needs-validation row g-3">
+                            <div class="col-md-4">
+                                <label for="startDate" class="form-label">Check-in</label>
+                                <input type="date" class="form-control" id="startDate" name="booking[startDate]" min="<%= today %>" required>
+                                <div class="invalid-feedback">Select a valid start date</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="endDate" class="form-label">Check-out</label>
+                                <input type="date" class="form-control" id="endDate" name="booking[endDate]" min="<%= today %>" required>
+                                <div class="invalid-feedback">Select a valid end date</div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="rooms" class="form-label">Rooms</label>
+                                <input type="number" class="form-control" id="rooms" name="booking[rooms]" min="1" max="<%= listing.availableRooms %>" value="1" required>
+                                <div class="invalid-feedback">Select between 1 and <%= listing.availableRooms %> rooms</div>
+                            </div>
+                            <div class="col-12 d-flex justify-content-end">
+                                <button class="btn btn-book-room" type="submit">
+                                    <i class="fas fa-bed me-2"></i>Confirm Booking
+                                </button>
+                            </div>
+                        </form>
+                        <% } %>
+
+                        <% if(currUser && safeUserBookings.length){ %>
+                            <hr>
+                            <h6>Your upcoming bookings</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Dates</th>
+                                            <th>Rooms</th>
+                                            <th>Total (incl. 18% tax)</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% safeUserBookings.forEach((booking)=>{ %>
+                                            <tr>
+                                                <td>
+                                                    <%= new Date(booking.startDate).toLocaleDateString() %> -
+                                                    <%= new Date(booking.endDate).toLocaleDateString() %>
+                                                </td>
+                                                <td><%= booking.rooms %></td>
+                                                <% 
+                                                    const nightlyRate = Number(listing.price || 0) * 1.18;
+                                                    const msPerDay = 1000 * 60 * 60 * 24;
+                                                    const end = new Date(booking.endDate);
+                                                    const start = new Date(booking.startDate);
+                                                    const rawNights = Math.ceil((end - start) / msPerDay);
+                                                    const nights = Math.max(rawNights, 1);
+                                                    const computedCost = nights * nightlyRate * Number(booking.rooms || 1);
+                                                    const displayCost = typeof booking.totalCost === "number" && booking.totalCost > 0 ? booking.totalCost : Number(computedCost.toFixed(2));
+                                                %>
+                                                <td>₹ <%= displayCost.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></td>
+                                                <td><span class="badge bg-success text-uppercase"><%= booking.status %></span></td>
+                                                <td>
+                                                    <form method="POST" action="/listings/<%=listing._id%>/bookings/<%=booking._id%>?_method=DELETE">
+                                                        <button class="btn btn-sm btn-outline-danger">Cancel</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <% if(currUser && currUser._id.equals(listing.owner._id) && activeBookings.length){ %>
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-users me-2"></i>Current Guests</h5>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-striped align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Guest</th>
+                                        <th>Rooms</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% activeBookings.forEach((booking)=>{ %>
+                                        <tr>
+                                            <td>@<%= booking.username %></td>
+                                            <td><%= booking.rooms %></td>
+                                            <td><%= new Date(booking.startDate).toLocaleDateString() %></td>
+                                            <td><%= new Date(booking.endDate).toLocaleDateString() %></td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <% } %>
+
+
+
+                <% if(currUser && currUser._id.equals(listing.owner._id)) { %>
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <a href="/listings/<%=listing._id%>/edit" class="btn btn-edit">
+                            <i class="fas fa-edit"></i>
+                            Edit Listing
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" style="display: inline;">
+                            <button class="btn btn-delete">
+                                <i class="fas fa-trash"></i>
+                                Delete Listing
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <% } %>
+
+                <hr class="my-4">
+
+                <% if(currUser && allowReview) { %>
+                <div class="mb-4">
+                    <h4>Leave a review</h4>
+                    <form method="POST" action="/listings/<%=listing._id%>/reviews" novalidate class="needs-validation">
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <fieldset class="starability-slot">
+                                <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked
+                                    aria-label="No rating." />
+                                <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                                <label for="first-rate1" title="Terrible">1 star</label>
+                                <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                                <label for="first-rate2" title="Not good">2 stars</label>
+                                <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                                <label for="first-rate3" title="Average">3 stars</label>
+                                <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                                <label for="first-rate4" title="Very good">4 stars</label>
+                                <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                                <label for="first-rate5" title="Amazing">5 stars</label>
+                            </fieldset>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Comments</label>
+                            <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+                            <div class="invalid-feedback">Please add some comments for review</div>
+                        </div>
+                        <button class="btn btn-outline-dark">Submit</button>
+                    </form>
+                </div>
+                <% } else if(currUser && !allowReview) { %>
+                    <div class="alert alert-info" role="alert">
+                        Only guests who have booked this listing can leave a review. Book a room above to share your experience.
+                    </div>
+                <% } else { %>
+                    <div class="alert alert-info" role="alert">
+                        Please <a href="/login">login</a> and complete a booking to leave a review.
+                    </div>
+                <% } %>
+
+                <div class="mt-4">
+                    <h4>All Reviews</h4>
+                    <div class="row">
+                        <% for(review of listing.reviews){  %> 
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100 review-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">@<%= review.author.username %></h5>
+                                    <p class="starability-result" data-rating="<%=review.rating%>">
+                                        Rated: <%=review.rating%> stars
+                                    </p>
+                                    <p class="card-text"><%=review.comment%></p>
+                                    <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE"> 
+                                        <button class="btn btn-sm btn-dark">Delete</button>
+                                    </form>
+                                </div>            
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const listingLocation = "<%= listing.location %>, <%= listing.country %>";
+        
+        function openDirections() {
+            const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(listingLocation)}`;
+            window.open(url, '_blank');
+        }
+        
+        function scrollToMap(event) {
+            event.preventDefault();
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function scrollToBooking(event) {
+            event.preventDefault();
+            const bookingSection = document.getElementById('booking-section');
+            if (bookingSection) {
+                bookingSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const startInput = document.getElementById('startDate');
+            const endInput = document.getElementById('endDate');
+            if (startInput && endInput) {
+                startInput.addEventListener('change', () => {
+                    if (startInput.value) {
+                        endInput.min = startInput.value;
+                        if (endInput.value && endInput.value < startInput.value) {
+                            endInput.value = startInput.value;
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
